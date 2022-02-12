@@ -1,0 +1,35 @@
+import { Link, useLoaderData, Outlet } from "remix";
+
+import { getPosts } from "~/post";
+import type { Post } from "~/post";
+import adminStyles from "~/style/admin.css";
+
+export const loader = async () => {
+  return getPosts();
+};
+
+export const links = () => {
+  return [{ rel: "stylesheet", href: adminStyles }];
+};
+
+export default function Admin() {
+  const posts = useLoaderData<Post[]>();
+
+  return (
+    <div className="admin">
+      <nav>
+        <h1>Admin</h1>
+        <ul>
+          {posts.map((post) => (
+            <li key={post.slug}>
+              <Link to={`edit_${post.slug}`}>{post.title}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <main>
+          <Outlet />
+      </main>
+    </div>
+  );
+}
